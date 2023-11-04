@@ -26,8 +26,8 @@ jobs:
           touch info.md
           echo "下载直链：${{ github.event.inputs.rom_url }}" >> info.md
           cd ~
-          wget 
-          python 123.py ${{ secrets.CID }} ${{ secrets.CS }} ~/12/*
+          wget https://raw.githubusercontent.com/tosasitill/123panBANYUN/main/bin/123panshangchuan.py
+          python3 123panshangchuan.py ${{ secrets.CID }} ${{ secrets.CS }} ~/12/*
           curl -X POST -H "Content-Type: application/json" -d '{"msg_type": "post", "content": {"post": {"zh_cn": {"title": "搬运进度通知", "content": [[{"tag": "text", "text": "新下载任务已完成: "}, {"tag": "text", "text": "下载直链：${{ github.event.inputs.rom_url }}                             |                 "},{"tag": "a", "text": "点我跳转下载链接", "href": "https://www.123pan.com/s/mkeA-ITJUh.html"}]]}}}}' ${{ secrets.FEISHU }}
       - name: 上传文件至 Github Release
         uses: ncipollo/release-action@v1.12.0
