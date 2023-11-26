@@ -4,6 +4,8 @@ import os
 import hashlib
 import time
 
+MAX_RETRY_ATTEMPTS = 200
+
 def open_request(path, data, token):
 	url = 'https://open-api.123pan.com' + path
 	headers = {
@@ -11,21 +13,40 @@ def open_request(path, data, token):
 		'Platform': 'open_platform',
 		'Authorization': 'Bearer ' + token
 	}
-	response = requests.post(url, data=data, headers=headers)
-	res = response.json()
-	if 'code' not in res or res['code'] != 0:
-		message = res.get('message', 'Network error')
-		raise Exception(message)
-	return res.get('data')
+
+	try:
+		response = requests.post(url, data=data, headers=headers)
+		response.raise_for_status()
+		res = response.json()
+
+		if 'code' not in res or res['code'] != 0:
+			message = res.get('message', 'Network error')
+			raise Exception(message)
+
+		return res.get('data')
+
+	except requests.exceptions.RequestException as e:
+		print(f'Network error: {e}')
+		raise
+
+	except Exception as e:
+		print(f'Error in open_request: {e}')
+		raise
 
 def put_part(url, part_stream, part_size):
 	headers = {'Content-Length': str(part_size)}
-	response = requests.put(url, data=part_stream, headers=headers)
-	if response.status_code != 200:
-		raise Exception(f'Chunk transfer error. Status code: {response.status_code}. Error: {response.text}')
+
+	try:
+		response = requests.put(url, data=part_stream, headers=headers)
+		response.raise_for_status()
+
+	except requests.exceptions.RequestException as e:
+		print(f'Chunk transfer error: {e}')
+		raise
 
 def upload_file(client_id, client_secret, parent, file_path):
 	token = ''
+
 	try:
 		res_data = open_request('/api/v1/access_token', {'clientID': client_id, 'clientSecret': client_secret}, token)
 		token = res_data['accessToken']
@@ -49,13 +70,13 @@ def upload_file(client_id, client_secret, parent, file_path):
 		slice_size = res_data['sliceSize']
 
 		res_data = open_request('/upload/v1/file/list_upload_parts', {'preuploadID': upload_id}, token)
-		parts_map = {part['partNumber']: {'size': part['size'], 'etag': part['etag']} for part in res_data['parts']}
+		parts_map = {part['partNumber']: {'size': part['size'], 'etag': part['etag']} for part in res_data.get('parts', [])}
 
 		with open(file_path, 'rb') as file:
 			for i in range(0, file_size, slice_size):
 				part_num = i // slice_size + 1
 				file.seek(i)
-				temp_data = file.read(slice_size)
+				temp_data = file.read(slice_size if i + slice_size < file_size else file_size - i)
 				temp_size = len(temp_data)
 
 				if temp_size == 0:
@@ -74,7 +95,7 @@ def upload_file(client_id, client_secret, parent, file_path):
 			print('Upload successful')
 			return
 
-		for j in range(200):
+		for j in range(MAX_RETRY_ATTEMPTS):
 			time.sleep(5)
 			res_data = open_request('/upload/v1/file/upload_async_result', {'preuploadID': upload_id}, token)
 			if res_data['completed']:
