@@ -24,7 +24,9 @@ jobs:
           aria2c -s 10 -x 10 -d ./12 "${{ github.event.inputs.rom_url }}"
           cd 12
           for file in *; do
-            mv "$file" "${file%-tosasitill0202}-tosasitill0202"
+            extension="${file##*.}"
+            filename="${file%.*}"
+            mv "$file" "${filename%-tosasitill0202}-tosasitill0202.$extension"
           done
           curl -X POST -H "Content-Type: application/json" -d '{"msg_type": "post", "content": {"post": {"zh_cn": {"title": "离线下载进度通知", "content": [[{"tag": "text", "text": "新下载任务已经下载完成!正在等待服务器上传! "}, {"tag": "text", "text": "下载直链：${{ github.event.inputs.rom_url }}"}]]}}}}' ${{ secrets.FEISHU }}
           cd ${{ github.workspace }}
