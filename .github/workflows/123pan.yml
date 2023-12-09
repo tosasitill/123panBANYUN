@@ -33,6 +33,7 @@ jobs:
           touch info.md
           echo "下载直链：${{ github.event.inputs.rom_url }}" >> info.md
           cd ~
+          pip install selenium
           wget https://raw.githubusercontent.com/tosasitill/123panBANYUN/main/bin/123panshang.py
           curl_output=$(curl -X GET 'https://www.123pan.com/b/api/share/get?3294484314=1701359450-8036384-537104134&limit=100&next=18446744073709551615&orderBy=file_name&orderDirection=asc&shareKey=mkeA-ITJUh&ParentFileId=3119576&Page=1&event=homeListFile&operateType=4')
           sleep 10
