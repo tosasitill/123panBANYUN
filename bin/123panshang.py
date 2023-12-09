@@ -1,5 +1,6 @@
 import time
 import requests
+import json
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
@@ -40,19 +41,11 @@ def upload_file(file_paths):
 		a = a + 1
 		file_uploader = driver.find_element(By.CSS_SELECTOR, 'ul > li:nth-child(1) > span > div > input[type=file]')
 		file_uploader.send_keys(file_path)
-		time.sleep(0.5)
-		
-		endpoint_url = 'https://metrics-collector.xaidc.com:31850/api/metrics'
-		success_response = {"code": 0, "message": "成功"}
+		time.sleep(600)
+
 		print('当前已成功上传', a, '次')
-		while True:
-		# Send HTTP request to the metrics collector endpoint
-		    response = requests.get(endpoint_url)
 		
-		# Check if the response matches the success JSON
-		    if response.json() == success_response:
-		     	print('收到成功的响应，跳出循环')
-		     	break
+
 
 	
 	
