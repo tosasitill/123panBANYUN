@@ -53,9 +53,6 @@ def upload_file(file_paths):
 		    if response.json() == success_response:
 		     	print('收到成功的响应，跳出循环')
 		     	break
-		
-		# Pause before checking again
-	    	time.sleep(5)
 
 	
 	
