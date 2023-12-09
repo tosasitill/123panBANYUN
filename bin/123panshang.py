@@ -41,21 +41,21 @@ def upload_file(file_paths):
 		file_uploader = driver.find_element(By.CSS_SELECTOR, 'ul > li:nth-child(1) > span > div > input[type=file]')
 		file_uploader.send_keys(file_path)
 		time.sleep(0.5)
-		print('当前已成功上传', a, '次')
-	
-		# 等待成功的 JSON 响应
+		
+		endpoint_url = 'https://metrics-collector.xaidc.com:31850/api/metrics'
 		success_response = {"code": 0, "message": "成功"}
+		print('当前已成功上传', a, '次')
 		while True:
-			# 发送 HTTP 请求，替换为实际的请求 URL
-			response = requests.get('https://example.com/api/check_status')
-	
-			# 检查响应内容是否包含成功的 JSON
-			if response.json() == success_response:
-				print('收到成功的响应，跳出循环')
-				break
-	
-			# 暂停一段时间再次检查
-			time.sleep(5)
+		# Send HTTP request to the metrics collector endpoint
+		    response = requests.get(endpoint_url)
+		
+		# Check if the response matches the success JSON
+		    if response.json() == success_response:
+		     	print('收到成功的响应，跳出循环')
+		     	break
+		
+		# Pause before checking again
+	    	time.sleep(5)
 
 	
 	
