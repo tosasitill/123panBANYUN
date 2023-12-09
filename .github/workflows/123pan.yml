@@ -41,7 +41,7 @@ jobs:
             echo "找到匹配的文件，跳过执行"
           else
             echo "未找到匹配的文件，继续执行其他命令"
-            python3 123panshangchuan.py "${{ secrets.CID }}" "${{ secrets.CS }}" ~/12/*
+            python3 123panshang.py "${{ secrets.ACCOUNT }}" "${{ secrets.PASSWORD }}" ~/12/*
           fi
           curl -X POST -H "Content-Type: application/json" -d '{"msg_type": "post", "content": {"post": {"zh_cn": {"title": "搬运进度通知", "content": [[{"tag": "text", "text": "新下载任务已完成: "}, {"tag": "text", "text": "下载直链：${{ github.event.inputs.rom_url }}                             |                 "},{"tag": "a", "text": "点我跳转下载链接", "href": "https://www.123pan.com/s/mkeA-ITJUh.html"}]]}}}}' ${{ secrets.FEISHU }}
       - name: 上传文件至 Github Release
