@@ -37,25 +37,28 @@ def upload_file(file_paths):
 	a = 0
 	print('开始文件上传')
 	for file_path in file_paths:
-	a = a + 1
-	file_uploader = driver.find_element(By.CSS_SELECTOR, 'ul > li:nth-child(1) > span > div > input[type=file]')
-	file_uploader.send_keys(file_path)
-	time.sleep(0.5)
-	print('当前已成功上传', a, '次')
+		a = a + 1
+		file_uploader = driver.find_element(By.CSS_SELECTOR, 'ul > li:nth-child(1) > span > div > input[type=file]')
+		file_uploader.send_keys(file_path)
+		time.sleep(0.5)
+		print('当前已成功上传', a, '次')
 	
-	# 等待成功的 JSON 响应
-	success_response = {"code": 0, "message": "成功"}
-	while True:
-		# 发送 HTTP 请求，替换为实际的请求 URL
-		response = requests.get('https://example.com/api/check_status')
+		# 等待成功的 JSON 响应
+		success_response = {"code": 0, "message": "成功"}
+		while True:
+			# 发送 HTTP 请求，替换为实际的请求 URL
+			response = requests.get('https://example.com/api/check_status')
 	
-		# 检查响应内容是否包含成功的 JSON
-		if response.json() == success_response:
-			print('收到成功的响应，跳出循环')
-			break
+			# 检查响应内容是否包含成功的 JSON
+			if response.json() == success_response:
+				print('收到成功的响应，跳出循环')
+				break
 	
-		# 暂停一段时间再次检查
-		time.sleep(5)
+			# 暂停一段时间再次检查
+			time.sleep(5)
+
+	
+	
 if __name__ == "__main__":
 	chrome_options = Options()
 	chrome_options.add_argument('--headless')
