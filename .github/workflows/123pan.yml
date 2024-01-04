@@ -20,6 +20,8 @@ jobs:
         run: |
           sudo apt update
           sudo apt install expect -y
+          sudo timedatectl set-timezone Asia/Shanghai
+          timedatectl
           curl -X POST -H "Content-Type: application/json" -d '{"msg_type": "post", "content": {"post": {"zh_cn": {"title": "离线下载进度通知", "content": [[{"tag": "text", "text": "新下载任务已被创建: "}, {"tag": "text", "text": "下载直链：${{ github.event.inputs.rom_url }}"}]]}}}}' ${{ secrets.FEISHU }}
           cd ~
           mkdir 12
@@ -38,6 +40,7 @@ jobs:
           git clone https://github.com/tosasitill/123PANlib.git
           cd 123PANlib
           file_list=$(find ~/12/* -type f -exec readlink -f {} +)
+          echo "$file_list"
           wget https://raw.githubusercontent.com/tosasitill/123panBANYUN/main/bin/pan.sh
           sudo chmod +x pan.sh
           ./pan.sh "${{ secrets.USER }}" "${{ secrets.WORD }}" "$file_list"
