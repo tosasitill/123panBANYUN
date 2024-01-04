@@ -1,7 +1,7 @@
 #!/usr/bin/expect
 
 # 检查参数是否为空
-if {[llength $argv] != 2} {
+if {[llength $argv] != 3} {
 	puts "请提供用户名和密码作为参数"
 	exit 1
 }
