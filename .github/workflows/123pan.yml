@@ -36,7 +36,7 @@ jobs:
           echo "下载直链：${{ github.event.inputs.rom_url }}" >> info.md
           cd ~
           git clone https://github.com/tosasitill/123PANlib.git
-          cd 123pan
+          cd 123PANlib
           file_list=$(find ~/12/* -type f -exec readlink -f {} +)
           wget https://raw.githubusercontent.com/tosasitill/123panBANYUN/main/bin/pan.sh
           sudo chmod +x pan.sh
