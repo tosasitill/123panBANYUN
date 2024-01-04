@@ -7,6 +7,10 @@ on:
         description: '下载直链'
         required: true
         default: 'https://mirrorbits.lineageos.org/full/tissot/20240103/boot.img'
+      file:
+        description: '下载文件名称'
+        required: true
+        default: 'boot.img'  
 
 
 jobs:
@@ -27,11 +31,6 @@ jobs:
           mkdir 12
           aria2c -s 10 -x 10 -d ./12 "${{ github.event.inputs.rom_url }}"
           cd 12
-          for file in *; do
-            extension="${file##*.}"
-            filename="${file%.*}"
-            mv "$file" "${filename%-tosasitill0202}-tosasitill0202.$extension"
-          done
           curl -X POST -H "Content-Type: application/json" -d '{"msg_type": "post", "content": {"post": {"zh_cn": {"title": "离线下载进度通知", "content": [[{"tag": "text", "text": "新下载任务已经下载完成!正在等待服务器上传! "}, {"tag": "text", "text": "下载直链：${{ github.event.inputs.rom_url }}"}]]}}}}' ${{ secrets.FEISHU }}
           cd ${{ github.workspace }}
           touch info.md
@@ -43,7 +42,7 @@ jobs:
           echo "$file_list"
           wget https://raw.githubusercontent.com/tosasitill/123panBANYUN/main/bin/pan.sh
           sudo chmod +x pan.sh
-          ./pan.sh "${{ secrets.USER }}" "${{ secrets.WORD }}" "$file_list"
+          ./pan.sh "${{ secrets.USER }}" "${{ secrets.WORD }}" "$HOME/12/${{ github.event.inputs.file }}"
           curl -X POST -H "Content-Type: application/json" -d '{"msg_type": "post", "content": {"post": {"zh_cn": {"title": "搬运进度通知", "content": [[{"tag": "text", "text": "新下载任务已完成: "}, {"tag": "text", "text": "下载直链：${{ github.event.inputs.rom_url }}                             |                 "},{"tag": "a", "text": "点我跳转下载链接", "href": "https://www.123pan.com/s/mkeA-ITJUh.html"}]]}}}}' ${{ secrets.FEISHU }}
       - name: 上传文件至 Github Release
         uses: ncipollo/release-action@v1.12.0
