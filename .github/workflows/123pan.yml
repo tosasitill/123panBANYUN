@@ -37,7 +37,6 @@ jobs:
           cd ~
           git clone https://github.com/qin1127/123pan.git
           cd 123pan
-          wget https://raw.githubusercontent.com/tosasitill/123panBANYUN/main/bin/123panshangchuan.py
           file_list=$(find ~/12/* -type f -exec readlink -f {} +)
           wget https://raw.githubusercontent.com/tosasitill/123panBANYUN/main/bin/pan.sh
           sudo chmod +x pan.sh
